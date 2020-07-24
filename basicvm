@@ -28,7 +28,7 @@ else
     echo -e "ROM 0 ${RED}FAIL${NC}"
 fi
 
-if [[ $GAINSTALLED == false]]; then
+if [[ $GAINSTALLED == false ]]; then
     echo "Checking ROM 2..."
     if [[ -f "$DISC1/$GASCRIPT"]]; then
         echo "Found Guest Additions on disc 1, installing..."
