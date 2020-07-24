@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#Install CentOS VM Utilities
+
+DISC0=/dev/sr0
+DISC1=/dev/sr1
+GASCRIPT=VboxLinuxAdditions.run
+GAINSTALLED=false
+ACTIVEROM=0
+
+
+RED='\033[0;31m'
+NC='\003[0m'
+
+yum install -y redhat-lsb-core net-tools epel-release kernel-headers kernel-devel bash-completion
+yum group install -y "Development Tools"
+yum update -y
+
+mkdir /mnt/cdrom
+echo "Checking disc 0"
+mount /dev/sr0 /mnt/cdrom
+if [[ -f "$DISC0/$GASCRIPT" ]]; then
+    echo "Found Guest Additions on disc 0, installing..."
+    sh /mnt/cdrom/VboxLinuxAdditions.run
+    echo "Done!"
+    GAINSTALLED=true
+else
+    echo -e "ROM 0 ${RED}FAIL"
+fi
+
+if [[ $GAINSTALLED = false]]; then
+    echo "Checking ROM 2..."
+    if [[ -f "$DISC1/$GASCRIPT"]]; then
+        echo "Found Guest Additions on disc 1, installing..."
+        sh /mnt/cdrom/VboxLinuxAdditions.run
+        echo "Done!"
+    fi
+fi
+echo "Installing GUI..."
+yum group install "Server with GUI"
+
+systemctl isolate graphical.target
